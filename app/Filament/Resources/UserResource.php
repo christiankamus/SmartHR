@@ -9,6 +9,7 @@ use Filament\Pages\Page;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Card;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Textarea;
@@ -16,15 +17,15 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\UserResource\Pages\CreateUser;
 use App\Filament\Resources\UserResource\Pages\EditUser;
+use App\Filament\Resources\UserResource\Pages\CreateUser;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Filament\Resources\UserResource\RelationManagers\RolesRelationManager;
-use Filament\Tables\Filters\TrashedFilter;
 
 class UserResource extends Resource
 {
@@ -40,35 +41,38 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Toggle::make('is_admin')
-                    ->required(),
-                TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
+                Card::make()
+                ->schema([
+                    TextInput::make('name')
+                        ->required()
+                        ->maxLength(255),
+                    Toggle::make('is_admin')
+                        ->required(),
+                    TextInput::make('email')
+                        ->email()
+                        ->required()
+                        ->maxLength(255),
 
-                TextInput::make('password')
-                    ->password()
-                    ->maxLength(255)
-                    ->dehydrateStateUsing(static fn(null|string $state):
-                        null|string =>
-                        filled($state) ? Hash::make($state):null,
-                    )->required(static fn(Page $livewire): string =>
-                        $livewire instanceof CreateUser,
-                    )
-                    ->dehydrated(static fn(null|string $state): bool =>
-                        filled($state),
-                    )->label(static fn(Page $livewire): string => 
-                        $livewire instanceof EditUser ? 'New Password' : 'Password',
-                    ),
-                CheckboxList::make('roles')
-                    ->relationship('roles','name')
-                    ->columns(3)
-                    ->helperText('Only choose one role!')
-                    ->required(),
+                    TextInput::make('password')
+                        ->password()
+                        ->maxLength(255)
+                        ->dehydrateStateUsing(static fn(null|string $state):
+                            null|string =>
+                            filled($state) ? Hash::make($state):null,
+                        )->required(static fn(Page $livewire): string =>
+                            $livewire instanceof CreateUser,
+                        )
+                        ->dehydrated(static fn(null|string $state): bool =>
+                            filled($state),
+                        )->label(static fn(Page $livewire): string => 
+                            $livewire instanceof EditUser ? 'New Password' : 'Password',
+                        ),
+                    CheckboxList::make('roles')
+                        ->relationship('roles','name')
+                        ->columns(3)
+                        ->helperText('Only choose one role!')
+                        ->required(),
+                    ])
             ]);
     }
 

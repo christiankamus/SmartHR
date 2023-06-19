@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'enabled' => true,
+    'enabled' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -14,7 +14,6 @@ return [
     |
     */
     'supported_locales' => [
-        'en',
         'fr',
     ],
 
@@ -72,7 +71,7 @@ return [
      | - the sort order to decide where it is shown on the dashboard.
      */
     'widget' => [
-        'enabled' => true,
+        'enabled' => false,
         'sort' => 1,
     ],
 ];
